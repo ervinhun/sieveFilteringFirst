@@ -2,5 +2,5 @@ namespace sievefilteringinternational;
 
 public interface IPostService
 {
-    Task<List<Post>> GetPosts();
+    Task<IQueryable<Post>> GetPosts();
 }
