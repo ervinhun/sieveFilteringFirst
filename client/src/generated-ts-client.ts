@@ -17,21 +17,17 @@ export class PostClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getPosts(filters: string | null | undefined, sorts: string | null | undefined, page: number | null | undefined, pageSize: number | null | undefined): Promise<Post[]> {
-        let url_ = this.baseUrl + "/GetPosts?";
-        if (filters !== undefined && filters !== null)
-            url_ += "Filters=" + encodeURIComponent("" + filters) + "&";
-        if (sorts !== undefined && sorts !== null)
-            url_ += "Sorts=" + encodeURIComponent("" + sorts) + "&";
-        if (page !== undefined && page !== null)
-            url_ += "Page=" + encodeURIComponent("" + page) + "&";
-        if (pageSize !== undefined && pageSize !== null)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+    getPosts(sieveModel: SieveModel): Promise<Post[]> {
+        let url_ = this.baseUrl + "/GetPosts";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(sieveModel);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -65,6 +61,16 @@ export interface Post {
     likeCount?: number;
     commentCount?: number;
     dateCreated?: string;
+}
+
+export interface SieveModelOfFilterTermAndSortTerm {
+    filters?: string | undefined;
+    sorts?: string | undefined;
+    page?: number | undefined;
+    pageSize?: number | undefined;
+}
+
+export interface SieveModel extends SieveModelOfFilterTermAndSortTerm {
 }
 
 export class ApiException extends Error {
